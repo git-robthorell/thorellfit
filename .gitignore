@@ -1,0 +1,11 @@
+# Node
+node_modules
+.npm
+.next
+out
+dist
+.env
+.env.*
+.DS_Store
+netlify/.netlify
+.vercel

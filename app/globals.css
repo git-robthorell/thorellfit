@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0b0b0c;
+  --fg: #f8fafc;
+  --muted: #94a3b8;
+  --brand: #0ea5e9;
+}
+
+html, body { height: 100%; }
+body { background: var(--bg); color: var(--fg); }
+
+.container { @apply max-w-6xl mx-auto px-4; }
+.section { @apply py-12 md:py-16; }
+.card { @apply rounded-2xl p-6 shadow-lg bg-white/5 border border-white/10; }
+.btn { @apply inline-flex items-center gap-2 rounded-2xl px-5 py-3 font-semibold; background: linear-gradient(135deg, #0ea5e9 0%, #22d3ee 100%); color: white; }
+.link { @apply underline decoration-dotted underline-offset-4; }
+input, select, textarea { @apply w-full rounded-xl bg-white/10 border border-white/20 p-3 text-white placeholder-slate-400; }
+label { @apply text-sm font-semibold text-slate-300; }
