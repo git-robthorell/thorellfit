@@ -1,22 +1,45 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
 export default function IntakeForm() {
+  const router = useRouter();
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setPending(true);
+    setError(null);
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    data.set("form-name", "patient-intake");
+
+    try {
+      const res = await fetch("/__forms.html", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(data as any).toString(),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      router.push("/success");
+    } catch (err) {
+      setError("Submission failed. Please try again.");
+    } finally {
+      setPending(false);
+    }
+  }
+
   return (
     <div className="section">
       <div className="container max-w-2xl">
         <h1 className="text-3xl font-bold">Patient Intake</h1>
         <p className="mt-2 text-slate-300">This form is secured and submissions are stored privately.</p>
 
-        <form
-          name="patient-intake"
-          method="POST"
-          data-netlify="true"
-          data-netlify-honeypot="bot-field"
-          action="/success"
-          className="mt-6 space-y-4 card"
-        >
+        <form className="mt-6 space-y-4 card" onSubmit={onSubmit}>
           <input type="hidden" name="form-name" value="patient-intake" />
-          <p className="hidden">
-            <label>Don’t fill this out if you’re human: <input name="bot-field" /></label>
-          </p>
 
           <div>
             <label htmlFor="fullName">Full name</label>
@@ -54,9 +77,13 @@ export default function IntakeForm() {
             <textarea id="goals" name="goals" rows={4} placeholder="Briefly describe your goals." />
           </div>
 
-          <button className="btn" type="submit">Submit Intake</button>
+          <button className="btn" type="submit" disabled={pending}>
+            {pending ? "Submitting…" : "Submit Intake"}
+          </button>
+
+          {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
         </form>
       </div>
     </div>
-  )
+  );
 }
